@@ -1,0 +1,7 @@
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+client:
+  access-key: xiaochen
+  secret-key: abcdef

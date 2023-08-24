@@ -2,20 +2,21 @@ package com.zijin.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.zijin.annotation.AuthCheck;
-import com.zijin.common.BaseResponse;
-import com.zijin.common.DeleteRequest;
-import com.zijin.common.ErrorCode;
-import com.zijin.common.ResultUtils;
+import com.zijin.common.*;
 import com.zijin.constant.CommonConstant;
 import com.zijin.exception.BusinessException;
 import com.zijin.model.dto.interfaceinfo.InterfaceInfoAddRequest;
+import com.zijin.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
 import com.zijin.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.zijin.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.zijin.model.entity.InterfaceInfo;
 import com.zijin.model.entity.User;
+import com.zijin.model.enums.InterfaceStatusEnum;
 import com.zijin.service.InterfaceInfoService;
 import com.zijin.service.UserService;
+import com.zijin.zijinapiclientsdk.client.ZijinapiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +41,9 @@ public class InterfaceInfoController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private ZijinapiClient zijinapiClient;
+
 
     // region 增删改查
 
@@ -193,7 +197,117 @@ public class InterfaceInfoController {
         Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size), queryWrapper);
         return ResultUtils.success(interfaceInfoPage);
     }
+    /**
+     * 上线接口
+     *
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/online")
+   // 有了这个注解就不再需要写管理员的逻辑
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> updateonlineInterfaceInfo(@RequestBody IdRequest idRequest,
+                                                           HttpServletRequest request) {
+//       判断是否存在
+        if(idRequest==null || idRequest.getId() <= 0){
+           throw  new BusinessException(ErrorCode.PARAMS_ERROR);
+       }
+        long id = idRequest.getId();
+        InterfaceInfo oldinterfaceInfo= interfaceInfoService.getById(id);
+        if(oldinterfaceInfo == null){
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+//        判断是否能够去调用
+        com.zijin.zijinapiclientsdk.model.User user=new com.zijin.zijinapiclientsdk.model.User();
+        user.setUsername("xiaochen");
+        String username = zijinapiClient.postUsernamebypost(user);
+//        校验传入的参数
+        if(StringUtils.isBlank(username)){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"接口错误");
+        }
+//        仅限管理员修改
+        InterfaceInfo interfaceInfo=new InterfaceInfo();
+        interfaceInfo.setId(id);
+//        引入枚举
+        interfaceInfo.setStatus(InterfaceStatusEnum.ONLINE.getValue());
 
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+
+    }
+    /**
+     * 下线接口
+     *
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/offline")
+//    有了这个注解就不再需要写管理员的逻辑
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> updateofflineInterfaceInfo(@RequestBody IdRequest idRequest,
+                                                           HttpServletRequest request) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        // 判断接口是否能够被调用
+        com.zijin.zijinapiclientsdk.model.User user = new com.zijin.zijinapiclientsdk.model.User();
+        user.setUsername("xiaochen");
+        String username = zijinapiClient.postUsernamebypost(user);
+        if (StringUtils.isBlank(username)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
+
+        }
+        //仅限管理员修改
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        interfaceInfo.setStatus(InterfaceStatusEnum.OFFLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+
+
+    }
+    /**
+     * 测试调用
+     *
+     * @param interfaceInfoinvokeRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/invoke")
+    public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoinvokeRequest,
+                                                            HttpServletRequest request) {
+        if (interfaceInfoinvokeRequest == null || interfaceInfoinvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR );
+        }
+        long id = interfaceInfoinvokeRequest.getId();
+        String userRequestParams = interfaceInfoinvokeRequest.getUserRequestParams();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        if (oldInterfaceInfo.getStatus() == InterfaceStatusEnum.OFFLINE.getValue()) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口已关闭");
+        }
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
+        ZijinapiClient tempclient=new ZijinapiClient(accessKey,secretKey);
+        Gson gson = new Gson();
+        com.zijin.zijinapiclientsdk.model.User  user = gson.fromJson(userRequestParams, com.zijin.zijinapiclientsdk.model.User.class);
+        String usernamebypost = tempclient.postUsernamebypost(user);
+        return ResultUtils.success(usernamebypost);
+
+
+    }
     // endregion
 
 }

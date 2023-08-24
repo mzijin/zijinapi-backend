@@ -1,0 +1,2 @@
+##spring starter config
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.zijin.zijinapiclientsdk.ZijinApiClientConfig
