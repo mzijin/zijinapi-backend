@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.zijin.annotation.AuthCheck;
+import com.zijin.apicommon.model.entity.InterfaceInfo;
+import com.zijin.apicommon.model.entity.User;
 import com.zijin.common.*;
 import com.zijin.constant.CommonConstant;
 import com.zijin.exception.BusinessException;
@@ -11,8 +13,7 @@ import com.zijin.model.dto.interfaceinfo.InterfaceInfoAddRequest;
 import com.zijin.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
 import com.zijin.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.zijin.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
-import com.zijin.model.entity.InterfaceInfo;
-import com.zijin.model.entity.User;
+
 import com.zijin.model.enums.InterfaceStatusEnum;
 import com.zijin.service.InterfaceInfoService;
 import com.zijin.service.UserService;
@@ -244,7 +245,7 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/offline")
-//    有了这个注解就不再需要写管理员的逻辑
+    // 有了这个注解就不再需要写管理员的逻辑
     @AuthCheck(mustRole = "admin")
     public BaseResponse<Boolean> updateofflineInterfaceInfo(@RequestBody IdRequest idRequest,
                                                            HttpServletRequest request) {

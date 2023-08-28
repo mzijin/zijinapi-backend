@@ -1,7 +1,7 @@
 package com.zijin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zijin.model.entity.User;
+import com.zijin.apicommon.model.entity.User;
 
 /**
  * @Entity com.yupi.project.model.domain.User

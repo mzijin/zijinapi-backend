@@ -1,6 +1,6 @@
 package com.zijin.service;
 
-import com.zijin.model.entity.User;
+import com.zijin.apicommon.model.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

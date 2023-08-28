@@ -2,7 +2,8 @@ package com.zijin.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zijin.model.entity.User;
+import com.zijin.apicommon.model.entity.User;
+
 
 import javax.servlet.http.HttpServletRequest;
 

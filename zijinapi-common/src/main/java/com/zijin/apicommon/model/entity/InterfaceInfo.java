@@ -1,4 +1,4 @@
-package com.zijin.model.entity;
+package com.zijin.apicommon.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;

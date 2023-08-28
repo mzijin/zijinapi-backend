@@ -37,3 +37,13 @@ mybatis-plus:
   client:
     access-key: xiaochen
     secret-key: abcdef
+dubbo:
+  application:
+    name: dubbo-springboot-demo-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    id: nacos-registry
+    address: nacos://localhost:8848
+

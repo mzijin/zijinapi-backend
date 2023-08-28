@@ -4,10 +4,11 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zijin.apicommon.model.entity.User;
 import com.zijin.common.ErrorCode;
 import com.zijin.exception.BusinessException;
 import com.zijin.mapper.UserMapper;
-import com.zijin.model.entity.User;
+
 import com.zijin.service.UserService;
 import com.zijin.constant.UserConstant;
 import lombok.extern.slf4j.Slf4j;

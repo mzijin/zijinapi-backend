@@ -2,9 +2,9 @@ package com.zijin.aop;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.zijin.annotation.AuthCheck;
+import com.zijin.apicommon.model.entity.User;
 import com.zijin.common.ErrorCode;
 import com.zijin.exception.BusinessException;
-import com.zijin.model.entity.User;
 import com.zijin.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;

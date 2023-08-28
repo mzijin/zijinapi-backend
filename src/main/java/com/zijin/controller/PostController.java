@@ -3,6 +3,7 @@ package com.zijin.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zijin.annotation.AuthCheck;
+import com.zijin.apicommon.model.entity.User;
 import com.zijin.common.BaseResponse;
 import com.zijin.common.DeleteRequest;
 import com.zijin.common.ErrorCode;
@@ -13,7 +14,7 @@ import com.zijin.model.dto.post.PostAddRequest;
 import com.zijin.model.dto.post.PostQueryRequest;
 import com.zijin.model.dto.post.PostUpdateRequest;
 import com.zijin.model.entity.Post;
-import com.zijin.model.entity.User;
+
 import com.zijin.service.PostService;
 import com.zijin.service.UserService;
 import lombok.extern.slf4j.Slf4j;

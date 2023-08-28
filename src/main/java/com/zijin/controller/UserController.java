@@ -3,13 +3,14 @@ package com.zijin.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.zijin.apicommon.model.entity.User;
 import com.zijin.common.BaseResponse;
 import com.zijin.common.DeleteRequest;
 import com.zijin.common.ErrorCode;
 import com.zijin.common.ResultUtils;
 import com.zijin.exception.BusinessException;
 import com.zijin.model.dto.user.*;
-import com.zijin.model.entity.User;
+
 import com.zijin.model.vo.UserVO;
 import com.zijin.service.UserService;
 import org.apache.commons.lang3.StringUtils;

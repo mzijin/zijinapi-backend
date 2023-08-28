@@ -19,6 +19,7 @@ import static com.zijin.zijinapiclientsdk.Utils.SignUtils.getSign;
  * @author zijin
  */
 public class ZijinapiClient {
+    private static final String GATEWAY_HOST="http://localhost:8090";
     private String accessKey;
     private String secretKey;
 
@@ -30,14 +31,14 @@ public class ZijinapiClient {
     public String getUsername(String name){
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
-        String result= HttpUtil.get("http://localhost:8123/api/name/", paramMap);
+        String result= HttpUtil.get(GATEWAY_HOST+"/api/name", paramMap);
         System.out.println(result);
         return  result;
     }
     public String postUsername(String name){
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
-        String result= HttpUtil.post("http://localhost:8123/api/name/", paramMap);
+        String result= HttpUtil.post(GATEWAY_HOST+"/api/name", paramMap);
         System.out.println(result);
         return  result;
 
@@ -64,7 +65,7 @@ public class ZijinapiClient {
 
     public String postUsernamebypost( User user){
         String json = JSONUtil.toJsonStr(user);
-        HttpResponse httpResponse = HttpRequest.post("http://localhost:8123/api/name/user/")
+        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST+"/api/name/user/")
 //                模拟签名认证，增加一个请求头，在上面写一个写一个请求头接口，当请求头里的内容与contrller成类的信息对的上，就给返回数据
                 .addHeaders(getHeaderMap(json))
                 .body(json)
